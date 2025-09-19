@@ -1,0 +1,46 @@
+Exercise 9: Compute the Running Total of Purchases per Customer
+Exercise:
+
+For each customer and their orders, show the following:
+
+customer_id – the ID of the customer.
+full_name – the full name of the customer.
+order_id – the ID of the order.
+order_date – the date of the order.
+total_amount – the total spent on this order.
+running_total – the running total spent by the given customer.
+Sort the rows by customer ID and order date.
+
+--================================ (QUERY) ============================================
+
+SELECT
+    c.customer_id,
+    c.first_name + ' ' + c.last_name AS full_name,
+    o.order_id,
+    o.order_date,
+    o.total_amount,
+    SUM(o.total_amount) OVER (
+        PARTITION BY c.customer_id
+        ORDER BY o.order_date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS running_total
+FROM Customers c
+JOIN Orders o
+    ON c.customer_id = o.customer_id
+ORDER BY c.customer_id, o.order_date;
+
+--================================ (RESULT) ============================================
+
+| customer_id  | full_name  | order_id  | order_date  | total_amount  | running_total  |
+| ------------ | ---------- | --------- | ----------- | ------------- | -------------- |
+| 101          | Ali Khan   | 1         | 2025-01-01  | 5000          | 5000           |
+| 101          | Ali Khan   | 2         | 2025-01-10  | 7500          | 12,500         |
+| 101          | Ali Khan   | 3         | 2025-01-20  | 7200          | 19,700         |
+| 102          | Sara Ahmed | 4         | 2025-02-05  | 4000          | 4000           |
+| 102          | Sara Ahmed | 5         | 2025-02-12  | 3000          | 7000           |
+
+
+
+
+
+
