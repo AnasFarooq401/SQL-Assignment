@@ -1,0 +1,49 @@
+Exercise 3: Select All Main Categories and Their Subcategories
+
+Exercise: Select the name of the main categories (which have a NULL in the parent_id column) and the name of their direct subcategory (if one exists). Name the first column category and the second column subcategory.
+
+--========================================(Create Table)================================================
+
+CREATE TABLE Category (
+    CategoryID_PK INT PRIMARY KEY,
+    CategoryName VARCHAR(100),
+    ParentID_FK INT NULL
+);
+
+-- Main Categories Insertion Where (ParentID = NULL) ===========================================
+INSERT INTO Category (CategoryID_PK, CategoryName, ParentID_FK) VALUES
+(1, 'Clothing', NULL),
+(2, 'Footwear', NULL),
+(3, 'Accessories', NULL);
+
+
+-- Subcategories Insertion Where (Point to ParentID_FK IS NOT NULL) ============================
+INSERT INTO Category (CategoryID_PK, CategoryName, ParentID_FK) VALUES
+(4, 'Shirts', 1),
+(5, 'Pants', 1),
+(6, 'Sneakers', 2),
+(7, 'Sandals', 2),
+(8, 'Watches', 3),
+(9, 'Belts', 3);
+
+--========================================(Query)================================================
+SELECT 
+    C.CategoryName AS Category,
+    CC.CategoryName AS SubCategory
+FROM Category C
+LEFT JOIN Category CC
+    ON C.CategoryID_PK = CC.ParentID_FK
+WHERE C.ParentID_FK IS NULL;
+
+--========================================(Results)================================================
+
+| Category    | SubCategory |
+| ----------- | ----------- |
+| Clothing    | Shirts      |
+| Clothing    | Pants       |
+| Footwear    | Sneakers    |
+| Footwear    | Sandals     |
+| Accessories | Watches     |
+| Accessories | Belts       |
+
+
