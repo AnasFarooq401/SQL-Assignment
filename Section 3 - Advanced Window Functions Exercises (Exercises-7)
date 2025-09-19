@@ -1,0 +1,70 @@
+Exercise 7: List the Top 3 Most Expensive Orders
+
+Exercise: Create a dense ranking of the orders based on their total_amount. 
+The bigger the amount, the higher the order should be. If two orders have the same total_amount, 
+the older order should go higher (you'll have to add the column order_date to the ordering). 
+Name the ranking column rank. After that, select only the orders with the three highest dense rankings. Show the rank, order_id, and total_amount.
+
+
+--=============================== (CREATE TABLE) ==============================
+
+CREATE TABLE Orders (
+    OrderID_PK INT PRIMARY KEY,
+    Customer_name VARCHAR(100),
+    Total_amount DECIMAL(10,2),
+    Order_date DATE
+);
+
+--=============================== (INSERTION) =================================
+
+INSERT INTO Orders (OrderID_PK, Customer_name, Total_amount, Order_date) VALUES
+(1, 'Ali',   5000.00, '2025-01-01'),
+(2, 'Sara',  7500.00, '2025-01-02'),
+(3, 'Ahmed', 7500.00, '2025-01-01'),  -- same amount but older
+(4, 'Zara',  9000.00, '2025-02-01'),
+(5, 'Usman', 4500.00, '2025-03-01'),
+(6, 'Hina',  9000.00, '2025-01-15'),  -- same amount, older order wins
+(7, 'Bilal', 6500.00, '2025-02-10');
+
+--=============================== (QUERY) =====================================
+
+;WITH RankedOrders AS (
+    SELECT 
+        OrderID_PK,
+        Total_amount,
+        Order_date,
+        DENSE_RANK() OVER (
+            ORDER BY Total_amount DESC, Order_date ASC
+        ) AS Rank
+    FROM Orders
+)
+SELECT Rank, OrderID_PK, Total_amount
+FROM RankedOrders
+WHERE Rank <= 3
+ORDER BY rank, Order_date;
+
+--=============================== (RESULT) =====================================
+
+| Rank | OrderID_PK| Total_amount  |
+| ---- | --------- | ------------- |
+| 1    | 6         | 9000.00       |
+| 1    | 4         | 9000.00       |
+| 2    | 3         | 7500.00       |
+| 2    | 2         | 7500.00       |
+| 3    | 7         | 6500.00       |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
