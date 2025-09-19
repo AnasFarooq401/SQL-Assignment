@@ -1,0 +1,60 @@
+Exercise 8: Compute Deltas Between Consecutive Orders
+
+Exercise: In this exercise, we're going to compute the difference between two consecutive orders from the same customer.
+
+Show the ID of the order (order_id), the ID of the customer (customer_id), the total_amount of the order, 
+the total_amount of the previous order based on the order_date (name the column previous_value), 
+and the difference between the total_amount of the current order and the previous order (name the column delta).
+
+--==============================(CREATE TABLE)===============================
+
+CREATE TABLE Orders (
+    OrderID_PK INT PRIMARY KEY,
+    CustomerID_FK INT,
+    Total_amount DECIMAL(10,2),
+    Order_date DATE
+);
+
+--==============================(INSERTION)==================================
+
+INSERT INTO Orders (OrderID_PK, CustomerID_FK, Total_amount, Order_date) VALUES
+(1, 101, 5000.00, '2025-01-01'),
+(2, 101, 7500.00, '2025-01-10'),
+(3, 101, 7200.00, '2025-01-20'),
+(4, 102, 4000.00, '2025-01-05'),
+(5, 102, 6500.00, '2025-02-01'),
+(6, 103, 8000.00, '2025-03-01');
+
+--==============================(QUERY)=====================================
+
+SELECT
+    OrderID_PK,
+    CustomerID_FK,
+    Total_amount,
+    LAG(Total_amount) OVER (
+        PARTITION BY CustomerID_FK
+        ORDER BY Order_date
+    ) AS previous_value,
+    Total_amount - LAG(Total_amount) OVER (
+        PARTITION BY CustomerID_FK
+        ORDER BY Order_date
+    ) AS delta
+FROM Orders
+ORDER BY CustomerID_FK, Order_date;
+
+--==============================(RESULT)====================================
+
+| order_id  | customer_id  | total_amount  | previous_value  | delta   |
+| --------- | ------------ | ------------- | --------------- | ------- |
+| 1         | 101          | 5000.00       | NULL            | NULL    |
+| 2         | 101          | 7500.00       | 5000.00         | 2500.00 |
+| 3         | 101          | 7200.00       | 7500.00         | -300.00 |
+| 4         | 102          | 4000.00       | NULL            | NULL    |
+| 5         | 102          | 6500.00       | 4000.00         | 2500.00 |
+| 6         | 103          | 8000.00       | NULL            | NULL    |
+
+
+
+
+
+
