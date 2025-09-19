@@ -1,0 +1,55 @@
+Exercise 6: Group Runners by Main Distance and Age
+
+Exercise: Display the distance and the number of runners there are for the following age categories: under 20, 20–29, 30–39, 40–49, and over 50. 
+
+Use the following column aliases: under_20, age_20_29, age_30_39, age_40_49, and over_50.
+
+
+--=========================(CREATE TABLE)====================================
+
+CREATE TABLE Runners (
+    RunnerID_PK INT PRIMARY KEY,
+    RunnerName VARCHAR(100),
+    Age INT,
+    Distance VARCHAR(50)
+);
+
+--=========================(INSERTION)=======================================
+
+INSERT INTO Runners (RunnerID_PK, RunnerName, Age, Distance) VALUES
+(1, 'Ali', 18, '5K'),
+(2, 'Sara', 22, '5K'),
+(3, 'Ahmed', 35, '5K'),
+(4, 'Nadia', 42, '10K'),
+(5, 'Usman', 28, '10K'),
+(6, 'Hina', 33, 'Half Marathon'),
+(7, 'Bilal', 51, 'Half Marathon'),
+(8, 'Zara', 19, '10K'),
+(9, 'Kashif', 48, 'Full Marathon'),
+(10, 'Saba', 55, 'Full Marathon');
+
+--=========================(QUERY)===========================================
+
+SELECT 
+    Distance,
+    SUM(CASE WHEN Age < 20 THEN 1 ELSE 0 END) AS under_20,
+    SUM(CASE WHEN Age BETWEEN 20 AND 29 THEN 1 ELSE 0 END) AS age_20_29,
+    SUM(CASE WHEN Age BETWEEN 30 AND 39 THEN 1 ELSE 0 END) AS age_30_39,
+    SUM(CASE WHEN Age BETWEEN 40 AND 49 THEN 1 ELSE 0 END) AS age_40_49,
+    SUM(CASE WHEN Age >= 50 THEN 1 ELSE 0 END) AS over_50
+FROM Runners
+GROUP BY Distance;
+
+--=========================(RESULTS)==========================================
+
+| Distance      | under_20  | age_20_29   | age_30_39   | age_40_49   | over_50  |
+| ------------- | --------- | ----------- | ----------- | ----------- | -------- |
+| 5K            | 1         | 1           | 1           | 0           | 0        |
+| 10K           | 1         | 1           | 0           | 1           | 0        |
+| Half Marathon | 0         | 0           | 1           | 0           | 1        |
+| Full Marathon | 0         | 0           | 0           | 1           | 1        |
+
+
+
+
+
