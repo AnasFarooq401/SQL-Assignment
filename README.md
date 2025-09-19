@@ -1,2 +1,2 @@
-# SQL-Assignment
-SMIT SQl Assignment
+# SQL-ASSIGNMENT
+SMIT SQL ASSIGNMENT
