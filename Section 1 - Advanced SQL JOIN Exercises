@@ -1,0 +1,81 @@
+Section 1 - Advanced SQL JOIN Exercises/excersice1.txt
+
+Exercise:
+Display the name of clothing items (name the column clothes), their color (name the column color), 
+and the last name and first name of the customer(s) who bought this apparel in their favorite color. 
+Sort rows according to color, in ascending order.
+
+--============================================(Create Tables) =========================================================
+
+-- Clothing Items
+CREATE TABLE Clothing (
+    ItemID_PK INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Color VARCHAR(30)
+);
+
+-- Customers
+CREATE TABLE Customer (
+    CustomerID_PK INT PRIMARY KEY,
+    FirstName VARCHAR(30),
+    LastName VARCHAR(30),
+    FavoriteColor VARCHAR(30)
+);
+
+-- Purchase History
+CREATE TABLE Purchase (
+    PurchaseID_PK INT PRIMARY KEY,
+    CustomerID_FK INT,
+    ItemID_FK INT,
+    FOREIGN KEY (CustomerID_FK) REFERENCES Customer(CustomerID_PK),
+    FOREIGN KEY (ItemID_FK) REFERENCES Clothing(ItemID_PK)
+);
+
+--============================================(Insertion Query) =========================================================
+-- Clothing items
+INSERT INTO Clothing VALUES (1, 'T-Shirt', 'Red');
+INSERT INTO Clothing VALUES (2, 'Jeans', 'Blue');
+INSERT INTO Clothing VALUES (3, 'Jacket', 'Black');
+INSERT INTO Clothing VALUES (4, 'Cap', 'Green');
+INSERT INTO Clothing VALUES (5, 'Shoes', 'Blue');
+
+-- Customers
+INSERT INTO Customer VALUES (1, 'Ali', 'Khan', 'Blue');
+INSERT INTO Customer VALUES (2, 'Sara', 'Malik', 'Red');
+INSERT INTO Customer VALUES (3, 'Ahmed', 'Raza', 'Black');
+INSERT INTO Customer VALUES (4, 'Hina', 'Sheikh', 'Green');
+
+-- Purchases
+INSERT INTO Purchase VALUES (1, 1, 2); -- Ali bought Jeans
+INSERT INTO Purchase VALUES (2, 1, 5); -- Ali bought Shoes
+INSERT INTO Purchase VALUES (3, 2, 1); -- Sara bought T-Shirt
+INSERT INTO Purchase VALUES (4, 3, 3); -- Ahmed bought Jacket
+INSERT INTO Purchase VALUES (5, 4, 4); -- Hina bought Cap
+
+--=========================================== (Main Query) ==========================================================
+
+SELECT 
+    c.Name AS clothes,
+    c.Color AS color,
+    cust.LastName,
+    cust.FirstName
+FROM Clothing c
+INNER JOIN Purchase p 
+    ON c.ItemID_PK = p.ItemID_FK
+INNER JOIN Customer cust 
+    ON p.CustomerID_FK = cust.CustomerID_PK
+WHERE c.Color = cust.FavoriteColor
+ORDER BY c.Color ASC;
+
+--===================================================================================================================
+
+| clothes | color | LastName | FirstName |
+| ------- | ----- | -------- | --------- |
+| T-Shirt | Red   | Malik    | Sara      |
+| Jeans   | Blue  | Khan     | Ali       |
+| Shoes   | Blue  | Khan     | Ali       |
+| Jacket  | Black | Raza     | Ahmed     |
+| Cap     | Green | Sheikh   | Hina      |
+
+
+
